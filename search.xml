@@ -20,7 +20,7 @@
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
       <categories>
-        <category>Hexo Blog</category>
+        <category>Hexo Blog 相关</category>
       </categories>
       <tags>
         <tag>Hexo</tag>
@@ -29,7 +29,7 @@
   <entry>
     <title>Hexo + GitHub Pages 搭建博客</title>
     <url>/year-08-07-hexo-blog.html</url>
-    <content><![CDATA[<p><a href="https://hexo.io/zh-cn/">HEXO</a> 是一个快速、简洁且高效的博客框架，</p>
+    <content><![CDATA[<p><a href="https://hexo.io/zh-cn/">Hexo</a> 是一个快速、简洁且高效的博客框架，</p>
 <p><a href="https://pages.github.com/">GitHub Pages</a> 是 GitHub 提供的一个网页寄存服务，可用于存放静态网页，包括博客、项目文档甚至整本书。</p>
 <p>前提：</p>
 <ul>
@@ -96,7 +96,7 @@
 <p>到这一步，如果不出错，你已经完成了博客的部署，接下来，就可以开始你的写作之旅啦😊</p>
 ]]></content>
       <categories>
-        <category>Hexo Blog使用</category>
+        <category>Hexo Blog 相关</category>
       </categories>
       <tags>
         <tag>Hexo</tag>
