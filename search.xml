@@ -245,7 +245,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pdb</span><br><span class="line">pdb.set_trace() <span class="comment"># 写在需要打断点的地方</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pdb <span class="keyword">import</span> set_trace <span class="keyword">as</span> pause</span><br><span class="line">pause() <span class="comment"># 写在需要打断点的地方</span></span><br></pre></td></tr></table></figure>
 
 <p>如下图所示，当命令行出现 (pdb)，说明已经正确打开了 pdb，接下来可以利用 pdb 进行调试了。</p>
-<p>不过上面两种方法发区别是：</p>
+<p>不过上面两种方法的区别是：</p>
 <ul>
 <li>命令行引入：在第一行命令进入调试模式</li>
 <li>文件引入：在第一个断点处进入调试模式</li>
@@ -262,7 +262,7 @@
 
 
 <h2 id="4-调试"><a href="#4-调试" class="headerlink" title="4. 调试"></a>4. 调试</h2><p>调试功能 PyCharm 也有，但要区分几个命令的区别：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">s 或 step # 执行下一行，进入函数体</span><br><span class="line">n 或 next # 执行下一行，不进入函数体</span><br><span class="line"></span><br><span class="line">r 或 return # 执行代码直到从当前函数返回</span><br><span class="line">c 或 cont 或 continue # 跳到下一断点</span><br><span class="line"></span><br><span class="line">unt(il) lineno # 一直执行到指定行号 lineno 的位置，或遇到断点</span><br><span class="line">j(ump) lineno # 直接执行指定行号 lineno 的语句，会跳过中间的语句</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">s 或 step # 执行下一行，进入函数体</span><br><span class="line">n 或 next # 执行下一行，不进入函数体</span><br><span class="line"></span><br><span class="line">r 或 return # 执行代码直到从当前函数返回</span><br><span class="line">c 或 cont 或 continue # 执行代码直到下一断点</span><br><span class="line"></span><br><span class="line">unt(il) lineno # 一直执行到指定行号 lineno 的位置，或遇到断点</span><br><span class="line">j(ump) lineno # 直接执行指定行号 lineno 的语句，会跳过中间的语句</span><br></pre></td></tr></table></figure>
 
 <p><strong>我常用的是 n 和 c</strong></p>
 <h2 id="5-源代码"><a href="#5-源代码" class="headerlink" title="5. 源代码"></a>5. 源代码</h2><p>查看当前代码：</p>
@@ -274,7 +274,7 @@
 
 ]]></content>
       <categories>
-        <category>Python 系列</category>
+        <category>Python 系列使用</category>
       </categories>
       <tags>
         <tag>Python</tag>
