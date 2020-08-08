@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    Tag: Python |  
+    Python 调试器 pdb |  
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,79 +44,189 @@
       
     <main class="content on">
       <section class="outer">
-  <article class="articles">
+  <article
+  id="post-pdb"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
-    
-    <h1 class="page-type-title">#&nbspPython</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2020" class="archive-year">2020</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/year-08-08-pdb.html" class="archive-article-date">
-  <time datetime="2020-08-08T03:31:31.000Z" itemprop="datePublished">08/08</time>
-</a>
+    <header class="article-header">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/year-08-08-pdb.html"
-    >Python 调试器 pdb</a> 
-</h2>
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Python 调试器 pdb
+</h1>
  
 
     </header>
-    
-    
+     
+    <div class="article-meta">
+      <a href="/year-08-08-pdb.html" class="article-date">
+  <time datetime="2020-08-08T03:31:31.000Z" itemprop="datePublished">2020-08-08</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python-%E7%B3%BB%E5%88%97/">Python 系列</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">673</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">2 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
       
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>如何调试 Python 程序？</p>
+<p>使用 PyCharm 等 IDE ，我们可以使用它自带的调试工具，具体可以看《 <a target="_blank" rel="noopener" href="https://catonetwo.github.io/year-08-08-pycharm.html">新手入门：PyCharm 的使用</a> 》的 5.4 节。</p>
+<p>如果没有安装 IDE，或者不方便使用 IDE ，比如在服务器上运行程序，我们可能会写 <strong>print</strong> 语句输出变量，但 Python 自带的 Debug 工具比 print 更方便，它就是 <strong>pdb</strong>。</p>
+<a id="more"></a>
+
+<p>首先附上官方文档 👉 <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/pdb.html">pdb</a>，然后介绍几个常用方法。</p>
+<h2 id="1-引用"><a href="#1-引用" class="headerlink" title="1. 引用"></a>1. 引用</h2><p>作为脚本在命令行调试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -m pdb myscript.py</span><br></pre></td></tr></table></figure>
+
+<p>作为模块在 Python 文件引用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pdb</span><br><span class="line">pdb.set_trace() <span class="comment"># 写在需要打断点的地方</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pdb <span class="keyword">import</span> set_trace <span class="keyword">as</span> pause</span><br><span class="line">pause() <span class="comment"># 写在需要打断点的地方</span></span><br></pre></td></tr></table></figure>
+
+<p>如下图所示，当命令行出现 (pdb)，说明已经正确打开了 pdb，接下来可以利用 pdb 进行调试了。</p>
+<p>不过上面两种方法发区别是：</p>
+<ul>
+<li>命令行引入：在第一行命令进入调试模式</li>
+<li>文件引入：在第一个断点处进入调试模式</li>
+</ul>
+<p>输入 <strong>h</strong>，可以查看相关命令，接下来介绍几个最常用的命令。</p>
+<img src="/year-08-08-pdb/pdb1.png" class>
+
+<h2 id="2-变量函数"><a href="#2-变量函数" class="headerlink" title="2. 变量函数"></a>2. 变量函数</h2><p>我们调试往往需要查看变量和函数值：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p expression # 输出 expression 的值，print 的格式</span><br><span class="line">pp expression # 输出 expression 的值，pprint 的格式</span><br><span class="line">whatis expression # 输出 expression 的变量类型</span><br><span class="line"></span><br><span class="line">a 或 args # 输出当前函数的参数列表</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-断点设置"><a href="#3-断点设置" class="headerlink" title="3. 断点设置"></a>3. 断点设置</h2><p>除了在 python  文件中写断点语句，我们还可以设置断点和临时断点，临时断点执行一次后时自动删除</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 添加断点</span></span><br><span class="line">b</span><br><span class="line">b lineno # lineno 行号</span><br><span class="line">b filename:lineno # filename 文件名 xx.py</span><br><span class="line">b functionname # functionname 函数名</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加临时断点</span></span><br><span class="line">tbreak</span><br><span class="line">tbreak lineno</span><br><span class="line">tbreak filename:lineno</span><br><span class="line">tbreak functionname</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除断点</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 不带参数清除所有断点，会提示确认（包括临时断点）</span></span><br><span class="line">cl </span><br><span class="line"><span class="meta">#</span><span class="bash"> 不带参数清除所有断点，会提示确认（包括临时断点）</span></span><br><span class="line">cl filename:lineno </span><br><span class="line">cl bpnumber [bpnumber ...] # bpnumber 是断点序号，多个以空格分开</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-调试"><a href="#4-调试" class="headerlink" title="4. 调试"></a>4. 调试</h2><p>调试功能 PyCharm 也有，但要区分几个命令的区别：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">s 或 step # 执行下一行，进入函数体</span><br><span class="line">n 或 next # 执行下一行，不进入函数体</span><br><span class="line"></span><br><span class="line">r 或 return # 执行代码直到从当前函数返回</span><br><span class="line">c 或 cont 或 continue # 跳到下一断点</span><br><span class="line"></span><br><span class="line">unt(il) lineno # 一直执行到指定行号 lineno 的位置，或遇到断点</span><br><span class="line">j(ump) lineno # 直接执行指定行号 lineno 的语句，会跳过中间的语句</span><br></pre></td></tr></table></figure>
+
+<p><strong>我常用的是 n 和 c</strong></p>
+<h2 id="5-源代码"><a href="#5-源代码" class="headerlink" title="5. 源代码"></a>5. 源代码</h2><p>查看当前代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">l 或 list # 查看当前行前后 11 行的源代码，当前行用箭头-&gt;指明</span><br><span class="line">ll # 查看整个源代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-退出调试"><a href="#6-退出调试" class="headerlink" title="6. 退出调试"></a>6. 退出调试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">q 或 exit</span><br></pre></td></tr></table></figure>
+
+
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
 
-    
+    </footer>
   </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/year-08-08-pycharm.html" class="archive-article-date">
-  <time datetime="2020-08-08T01:59:16.000Z" itemprop="datePublished">08/08</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/year-08-08-pycharm.html"
-    >新手入门：PyCharm 的使用</a> 
-</h2>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/year-08-08-pycharm.html" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">新手入门：PyCharm 的使用</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "kcnVwWB08dmrqeVH1p3Ebzp1-gzGzoHsz",
+    app_key: "O6F4AaYdkpOrRJfNcdt4lsck",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
  
-
-    </header>
-    
-    
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PyCharm/" rel="tag">PyCharm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
-
-    
-  </div>
+     
 </article>
-      
-      
-    </div>
-  </div>
-  
-  
 
-  
 </section>
       <footer class="footer">
   <div class="outer">
@@ -264,6 +374,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
