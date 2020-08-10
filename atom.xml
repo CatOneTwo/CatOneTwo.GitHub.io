@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-08-08T07:27:56.344Z</updated>
+  <updated>2020-08-10T07:40:16.164Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>YOLOv4 目标检测总结</title>
+    <link href="http://yoursite.com/year-08-10-YOLOv4-skill.html"/>
+    <id>http://yoursite.com/year-08-10-YOLOv4-skill.html</id>
+    <published>2020-08-10T02:23:41.000Z</published>
+    <updated>2020-08-10T07:40:16.164Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="http://arxiv.org/abs/2004.10934">YOLOv4</a> 是YOLOv3的一个优化，它的主要方法是组合不同检测技巧，从而选取出最优解。</p><p>这篇论文不但介绍了自己的方法，还总结了目标检测的框架和技巧，对我们有很大的启发意义。</p><a id="more"></a><h2 id="1-框架"><a href="#1-框架" class="headerlink" title="1. 框架"></a>1. 框架</h2><p>目标检测的通用模型通常包含两部分：CNN + 预测类别位置的部分。</p><ul><li>CNN 可称为模型的骨干网络（backbone），作用是提取图片特征，它会在 ImageNet  上预训练</li><li>预测部分即网络的输出部分称为头（ head），作用是预测图片中物体的类别（class）和边界框（bounding box）</li></ul><p>这两部分再加上输入的待检测的图片，就形成了 <strong>输入→网络→输出</strong> 的流程，作者形象地比喻为 <strong>input→backbone→heads</strong>。</p><p>近几年，有些学者在 backbone 和 head 之间插入一些 layer，主要用于收集不同阶段的特征图。这个选项可以看作流程中的 neck，所以模型的整个流程概括为 <strong>input→backbone→neck→heads</strong>，通用的模型是由这三 / 四部分组成的。</p><p>下面介绍 backbone 和 head 的分类。</p><p>根据 detector 在 GPU 平台还是 CPU 平台训练，backbone 可以分为：</p><p><img src="/year-08-10-YOLOv4-skill/backbone.png"></p><p>根据 detector 是否是 one-stage ，以及是否需要 anchor ，head 可以分为：</p><p> <img src="/year-08-10-YOLOv4-skill/head.png"></p><p>最后，附上作者总结的模型框架：</p><p> <img src="/year-08-10-YOLOv4-skill/archi.png"></p><h2 id="2-技巧"><a href="#2-技巧" class="headerlink" title="2. 技巧"></a>2. 技巧</h2><p>下面总结的这些技巧，论文大都给出了参考论文，如果对某种方法感兴趣，可以通过 YOLOv4 查找相应的论文。</p><h3 id="2-1-Bag-of-freebies"><a href="#2-1-Bag-of-freebies" class="headerlink" title="2.1 Bag of freebies"></a>2.1 Bag of freebies</h3><blockquote><p>We call these methods that only change the training strategy or only increase the training cost as “bag of freebies.”</p></blockquote><p>不改变模型，只改变训练策略或增加训练成本的那些方法</p><h4 id="Data-augmentation"><a href="#Data-augmentation" class="headerlink" title="Data augmentation"></a>Data augmentation</h4><p>数据增强：通过增加输入图片的多样性，从而增强模型的鲁棒性 robust</p><ul><li>pixel-wise adjustments 逐像素调整，保留调整后区域中的所有原始像素信息<ul><li>photometric distortions 改变图片的亮度、对比度、饱和度</li><li>geometric distortions 改变图像尺寸裁剪，翻转</li></ul></li><li>simulate object occlusion issues 在图像上模拟对象遮挡问题<ul><li>random erase, CutOut 随机选择图像中的矩形区域，并填充零的随机或互补值</li><li>hide-and-seek and grid mask 随机或均匀选择图像中的多个矩形区域并将其替换为全零</li></ul></li><li>apply to feature maps 在特征图上模拟遮挡<ul><li>DropOut, DropConnect, DropBlock</li></ul></li><li>use multiple images together 多幅图混合成一幅图<ul><li>MixUp 两幅图的乘积</li><li>CutMix 一幅图裁剪后覆盖到另一幅图，并根据混合区域调整标签</li></ul></li><li>style transfer GAN 通过 GAN 生成图片</li></ul><h4 id="Data-imbalance"><a href="#Data-imbalance" class="headerlink" title="Data imbalance"></a>Data imbalance</h4><p>数据不平衡：语义分布（semantic distribution）有偏差，不同类别之间的数据不平衡</p><ul><li>two-stage detector(sparse prediction)<ul><li>negative example mining, online hard example mining</li></ul></li><li>one-stage detector(dense prediction)<ul><li>focal loss (RetinaNet)</li></ul></li></ul><h4 id="Soft-label"><a href="#Soft-label" class="headerlink" title="Soft label"></a>Soft label</h4><p>如何表示标签：one-hot hard representation 很难表达不同类别之间的关系</p><blockquote><p>Hard Label = binary encoded e.g. [0, 0, 1, 0]</p><p>Soft Label = probability encoded e.g. [0.1, 0.3, 0.5, 0.2]</p><p>Soft labels have the potential to tell a model more about the meaning of each sample.</p></blockquote><ul><li><p>label smoothing 把 hard label 转换成 soft label，使模型更鲁棒</p></li><li><p>use the knowledge distillation to design the label refinement network 通过知识蒸馏获得更好的 soft label</p></li></ul><h4 id="Bounding-Box-BBox-regression"><a href="#Bounding-Box-BBox-regression" class="headerlink" title="Bounding Box (BBox) regression"></a>Bounding Box (BBox) regression</h4><p>边界框的回归函数：传统的目标函数使用均方差 Mean Square Error (MSE)，直接回归坐标没有考虑物体的完整性，因此可以添加 IOU 相关 loss</p><blockquote><p>BBox 的两种表示方法</p><p>{xcenter, ycenter, w, h}</p><p>{xtop left, ytop left, xbottom right, ybottom right}</p></blockquote><ul><li>IOU loss 因为 IoU 是尺度不变表示，所以可以解决传统方法计算 {x，y，w，h} 的 l1 或 l2 损失时，损失会随着尺度增加的问题。</li><li>GIoU loss 除覆盖区域外，还包括对象的形状和方向，目的是找到预测和真实框间的最小覆盖面积</li><li>DIoU loss 考虑物体中心间的距离</li><li>CIoU loss 同时考虑重叠区域，中心点之间的距离和纵横比，可以在 BBox 回归问题上实现更好的收敛速度和准确性</li></ul><hr><h3 id="2-2-Bag-of-specials"><a href="#2-2-Bag-of-specials" class="headerlink" title="2.2 Bag of specials"></a>2.2 Bag of specials</h3><blockquote><p>For those plugin modules and post-processing methods that only increase the inference cost by a small amount but can significantly improve the accuracy of object detection, we call them “bag of specials”.</p></blockquote><p>改变模型，添加网络层或添加后处理</p><h4 id="Enhance-receptive-field-module"><a href="#Enhance-receptive-field-module" class="headerlink" title="Enhance receptive field module"></a>Enhance receptive field module</h4><p>增强感受野模块</p><ul><li><p>SPP module : 来源于金字塔匹配 Spatial Pyramid Matching (SPM) ，把 SPM 插入 CNN 中，使用最大池化代替 BOW。YOLOv3 改进了 SPP 模块</p></li><li><p>ASPP module : ASPP 模块和改进的 SPP 模块之间的操作差异主要在于原始 k×k 内核大小，最大步幅等于1到几个 3×3 内核大小，膨胀比等于 k，以及 在膨胀卷积运算中，步幅等于 1</p></li><li><p>RFB module : RFB模块将使用k×k个核的多个膨胀卷积，膨胀比等于k，步幅等于1，以获得比ASPP更全面的空间覆盖范围</p></li></ul><h4 id="Attention-module"><a href="#Attention-module" class="headerlink" title="Attention module"></a>Attention module</h4><p>添加注意力模块</p><p>相关项目👉<a href="https://github.com/Separius/awesome-fast-attention">GitHub</a></p><ul><li><p>channel-wise attention 通道注意力机制 </p><ul><li>Squeeze-and-Excitation (SE module) 在 GPU 上运行耗时增加，更适合在移动设备中使用</li></ul></li><li><p>point-wise attention 空间注意力机制</p><ul><li>Spatial Attention Module (SAM) 不影响 GPU 运行的耗时</li></ul></li></ul><p><img src="/year-08-10-YOLOv4-skill/attention.png"></p><h4 id="Feature-integration"><a href="#Feature-integration" class="headerlink" title="Feature integration"></a>Feature integration</h4><p>特征整合，把彼此分开的特征（特征表征）正确联系起来，形成能够对某一物体的表征</p><ul><li><p>skip connection (FCN) , hyper-column 将低层物理特征集成到高层语义特征</p></li><li><p>SFAM 使用 SE 模块（上面提到的注意力模块）在多尺度级联特征图上执行通道级级别的加权</p></li><li><p>ASFF 使用 softmax 作为逐点级别加权，然后添加不同比例的特征图</p></li><li><p>BiFPN 提出了多输入加权残差连接的方法，以执行按比例缩放级别的加权，然后添加不同比例的特征图</p></li></ul><h4 id="Good-activation-function"><a href="#Good-activation-function" class="headerlink" title="Good activation function"></a>Good activation function</h4><p>好的激活函数</p><ul><li><p>ReLU 解决了传统 tanh 和 sigmoid 激活函数中经常遇到的梯度消失（gradient vanish）问题</p></li><li><p>LReLU, PReLU , ReLU6 , Scaled Exponential Linear Unit (SELU) , Swish , hard-Swish , and Mish</p></li></ul><p>Post processing</p><p>后处理常用的是 NMS 方法，用于过滤那些预测同一对象的不好 BBox，并仅保留具有较高响应度的候选 BBox。它还有下面这些优化方案：</p><ul><li><p>greedy NMS 把 classification confidence score 作为 R-CNN 的参考，根据由高到低的分数过滤</p></li><li><p>soft NMS 它考虑了一个问题，即物体的遮挡可能会导致置信度得分的下降</p></li><li><p>DIoU NMS 在软 soft NMS 的基础上将中心点距离的信息添加到 BBox 筛选过程中</p></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;http://arxiv.org/abs/2004.10934&quot;&gt;YOLOv4&lt;/a&gt; 是YOLOv3的一个优化，它的主要方法是组合不同检测技巧，从而选取出最优解。&lt;/p&gt;
+&lt;p&gt;这篇论文不但介绍了自己的方法，还总结了目标检测的框架和技巧，对我们有很大的启发意义。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="CV系列" scheme="http://yoursite.com/categories/CV%E7%B3%BB%E5%88%97/"/>
+    
+    
+      <category term="object detection" scheme="http://yoursite.com/tags/object-detection/"/>
+    
+  </entry>
   
   <entry>
     <title>Python 调试器 pdb</title>
