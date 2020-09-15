@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-08-12T04:29:00.342Z</updated>
+  <updated>2020-09-15T14:38:56.238Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>远程访问服务器的 Jupyter Notebook</title>
+    <link href="http://yoursite.com/year-09-15-server-jupyter.html"/>
+    <id>http://yoursite.com/year-09-15-server-jupyter.html</id>
+    <published>2020-09-15T14:27:32.000Z</published>
+    <updated>2020-09-15T14:38:56.238Z</updated>
+    
+    <content type="html"><![CDATA[<p>如何修改服务器上的代码，其中一种方法就是打开服务器上的 Jupyter Notebook 访问文件。</p><p>一般情况下，当你远程连接终端时，输入 jupyter notebook，它会自动打开一个服务器本地的 jupyter notebook，但是访问可能会有些卡顿，这种情况下，我们就应该尝试使用在我们的本地访问服务器上的 jupyter notebook。</p><a id="more"></a><p><strong>步骤</strong></p><ol><li><p>远程连接服务器（如用 ssh），在终端输入以下命令生成服务器 jupyter 的默认配置文件：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></figure></li><li><p>生成访问密码(token)，在终端输入<code>ipython</code>，设置你自己的 jupyter 访问密码。记住最后输出的 <code>sha1:xxxxx</code> 这个字符串要复制下来，等会儿用</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: <span class="keyword">from</span> notebook.auth <span class="keyword">import</span> passwd</span><br><span class="line">In [<span class="number">2</span>]: passwd()</span><br><span class="line">Enter password: <span class="comment">## 你设定的密码</span></span><br><span class="line">Verify password: <span class="comment">## 确认密码</span></span><br><span class="line">Out[<span class="number">2</span>]: <span class="string">&#x27;sha1:xxxxxxxxxxxxxxxxx&#x27;</span></span><br></pre></td></tr></table></figure></li><li><p>修改./jupyter/jupyter_notebook_config.py 文件。如果在终端访问，可以使用 vim 打开该文件  <code>vim ~/.jupyter/jupyter_notebook_config.py</code>。打开以后，里面的内容是服务器上 jupyter notebook 的一些基本配置，全部都有注释，我们现在需要做的是找到如下几行，<strong>去掉注释并修改</strong>：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.ip=<span class="string">&#x27;*&#x27;</span></span><br><span class="line">c.NotebookApp.password = <span class="string">u&#x27;刚才复制的那个密文&#x27;</span></span><br><span class="line">c.NotebookApp.open_browser = <span class="literal">False</span></span><br><span class="line">c.NotebookApp.port =<span class="number">8888</span> <span class="comment">#可自行指定一个端口, 访问时使用该端口</span></span><br><span class="line">c.NotebookApp.allow_remote_access = <span class="literal">True</span></span><br></pre></td></tr></table></figure></li><li><p>在服务器上启动 jupyter notebook，然后在本地的浏览器上输入 <code>http://服务器ip:8888/</code>，输入你刚开始设的密码即可访问服务器上的文件了。</p></li></ol><blockquote><p>要注意，这里的 IP 是服务器 IP，不是输入 jupyter notebook 返回的那个 IP，因为返回的 IP 是服务器本地localhost 对应的 IP（我开始一直输返回的 IP 还想着为什么失败🤦‍）</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;如何修改服务器上的代码，其中一种方法就是打开服务器上的 Jupyter Notebook 访问文件。&lt;/p&gt;
+&lt;p&gt;一般情况下，当你远程连接终端时，输入 jupyter notebook，它会自动打开一个服务器本地的 jupyter notebook，但是访问可能会有些卡顿，这种情况下，我们就应该尝试使用在我们的本地访问服务器上的 jupyter notebook。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Server 系列" scheme="http://yoursite.com/categories/Server-%E7%B3%BB%E5%88%97/"/>
+    
+    
+      <category term="Server" scheme="http://yoursite.com/tags/Server/"/>
+    
+      <category term="Jupyter NoteBook" scheme="http://yoursite.com/tags/Jupyter-NoteBook/"/>
+    
+  </entry>
   
   <entry>
     <title>YOLOv4 目标检测总结</title>
